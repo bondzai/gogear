@@ -1,0 +1,4 @@
+[submodule "go-ports-forwarding"]
+	path = go-ports-forwarding
+	url = git@github.com:bondzai/go-ports-forwarding.git
+	branch = master
