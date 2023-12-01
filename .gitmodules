@@ -2,3 +2,7 @@
 	path = go-ports-forwarding
 	url = git@github.com:bondzai/go-ports-forwarding.git
 	branch = master
+[submodule "gominal"]
+	path = gominal
+	url = git@github.com:bondzai/gominal.git
+	branch = master
