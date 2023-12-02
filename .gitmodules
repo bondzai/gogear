@@ -6,3 +6,7 @@
 	path = gominal
 	url = git@github.com:bondzai/gominal.git
 	branch = master
+[submodule "go-tcp-server"]
+	path = go-tcp-server
+	url = git@github.com:bondzai/go-tcp-server.git
+	branch = master
