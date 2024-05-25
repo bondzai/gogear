@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-// Serialize the message struct to JSON
+// Serialize the message to JSON
 func SerializeMessage(message interface{}) ([]byte, error) {
 	serialized, err := json.Marshal(message)
 	if err != nil {
