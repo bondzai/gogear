@@ -39,9 +39,9 @@ func PPrint(data interface{}, keysToShow ...string) {
 	}
 }
 
-// TrackPerformance returns a function that when called, logs the time
-// taken since TrackPerformance was called.
-func TrackPerformance(funcName string) func() {
+// TrackRuntime returns a function that when called, logs the time
+// taken since TrackRuntime was called.
+func TrackRuntime(funcName string) func() {
 	timeStart := time.Now()
 	return func() {
 		timeEnd := time.Now()
