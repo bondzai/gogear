@@ -2,43 +2,47 @@ package toolbox
 
 import (
 	"context"
-	"io"
-	"log"
-	"net/http"
+	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 )
 
-// GracefulShutdown handles the graceful shutdown of the server and multiple io.Closer resources.
-func GracefulShutdown(server *http.Server, closers []io.Closer, timeout time.Duration) error {
-	gracefulStop := make(chan os.Signal, 1)
-	signal.Notify(gracefulStop, syscall.SIGTERM, syscall.SIGINT)
+// GracefulShutdown handles graceful shutdown of the application.
+// It receives a context, a cleanup function, and a timeout duration for the shutdown.
+func GracefulShutdown(ctx context.Context, cleanup func() error, timeout time.Duration) error {
+	// Create a channel to listen for OS signals
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM)
 
-	<-gracefulStop
-	log.Println("Shutdown signal received")
+	// Wait for a signal
+	select {
+	case <-stop:
+		fmt.Println("Shutdown signal received")
 
-	// Context with timeout for server shutdown
-	ctx, cancel := context.WithTimeout(context.Background(), timeout)
-	defer cancel()
+		// Create a new context with timeout for the cleanup function
+		ctx, cancel := context.WithTimeout(ctx, timeout)
+		defer cancel()
 
-	// Shutdown the server
-	if err := server.Shutdown(ctx); err != nil {
-		log.Printf("Error shutting down server: %v", err)
-	}
-	log.Println("Server gracefully stopped")
+		// Run the cleanup function
+		done := make(chan error, 1)
+		go func() {
+			done <- cleanup()
+		}()
 
-	// Close all provided io.Closer resources
-	for _, closer := range closers {
-		if err := closer.Close(); err != nil {
-			log.Printf("Error closing resource: %v", err)
-		} else {
-			log.Println("Resource gracefully closed")
+		// Wait for the cleanup to complete or context timeout
+		select {
+		case err := <-done:
+			if err != nil {
+				return fmt.Errorf("cleanup error: %w", err)
+			}
+			fmt.Println("Cleanup completed successfully")
+			return nil
+		case <-ctx.Done():
+			return fmt.Errorf("shutdown timeout: %w", ctx.Err())
 		}
+	case <-ctx.Done():
+		return fmt.Errorf("context canceled: %w", ctx.Err())
 	}
-
-	return nil
 }
-
-// Rest of your main function (database connections, message queue setup, HTTP handlers, etc.)
