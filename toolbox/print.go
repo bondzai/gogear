@@ -3,6 +3,7 @@ package toolbox
 import (
 	"encoding/json"
 	"log"
+	"time"
 )
 
 // PPrint pretty prints the given data object. If keysToShow is provided,
@@ -35,5 +36,15 @@ func PPrint(data interface{}, keysToShow ...string) {
 		} else {
 			log.Println(string(jsonBytes))
 		}
+	}
+}
+
+// TrackPerformance returns a function that when called, logs the time
+// taken since TrackPerformance was called.
+func TrackPerformance(funcName string) func() {
+	timeStart := time.Now()
+	return func() {
+		timeEnd := time.Now()
+		log.Printf("%s took %v to run.\n", funcName, timeEnd.Sub(timeStart))
 	}
 }
