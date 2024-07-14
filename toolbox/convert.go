@@ -1,6 +1,9 @@
 package toolbox
 
-import "unicode"
+import (
+	"time"
+	"unicode"
+)
 
 // CamelToSnakeCase converts camelCase strings to snake_case.
 func CamelToSnakeCase(s string) string {
@@ -16,4 +19,8 @@ func CamelToSnakeCase(s string) string {
 		}
 	}
 	return string(result)
+}
+
+func GetFormattedTime() string {
+	return time.Now().Format(time.RFC3339)
 }
