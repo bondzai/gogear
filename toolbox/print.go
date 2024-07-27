@@ -2,7 +2,9 @@ package toolbox
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
+	"runtime"
 	"time"
 )
 
@@ -47,4 +49,12 @@ func TrackRuntime(funcName string) func() {
 		timeEnd := time.Now()
 		log.Printf("%s took %v to run.\n", funcName, timeEnd.Sub(timeStart))
 	}
+}
+
+// TrackRoutines prints the current number of active goroutines to the console.
+// This function is useful for monitoring and debugging the concurrency behavior
+// of your application, particularly in identifying potential goroutine leaks or
+// unexpected increases in goroutine usage.
+func TrackRoutines() {
+	fmt.Printf("Number of Running Goroutines: %d\n", runtime.NumGoroutine())
 }
