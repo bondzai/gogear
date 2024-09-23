@@ -1,11 +1,10 @@
-package toolbox
+package rest
 
 import (
-	"time"
 	"unicode"
 )
 
-func CamelToSnakeCase(s string) string {
+func camelToSnakeCase(s string) string {
 	var result []rune
 	for i, r := range s {
 		if unicode.IsUpper(r) {
@@ -17,9 +16,16 @@ func CamelToSnakeCase(s string) string {
 			result = append(result, r)
 		}
 	}
+
 	return string(result)
 }
 
-func GetFormattedTime() string {
-	return time.Now().Format(time.RFC3339)
+func isInSlice[T comparable](slice []T, element T) bool {
+	for _, v := range slice {
+		if v == element {
+			return true
+		}
+	}
+
+	return false
 }
