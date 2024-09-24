@@ -2,7 +2,7 @@ package rest
 
 import "math"
 
-func PaginateResponse(data interface{}, count int64, params QueryParams) PaginatedResponse {
+func PaginateResponse(data []interface{}, count int64, params QueryParams) PaginatedResponse {
 	response := PaginatedResponse{
 		Items:      data,
 		TotalItems: count,
@@ -10,21 +10,11 @@ func PaginateResponse(data interface{}, count int64, params QueryParams) Paginat
 
 	var totalPages int
 
-	if params.ItemPerPage == nil {
-		defaultPageSize := int(0)
-		params.ItemPerPage = &defaultPageSize
-	}
-
-	if params.CurrentPage == nil {
-		defaultPage := int(1)
-		params.CurrentPage = &defaultPage
-	}
-
-	if *params.ItemPerPage == 0 {
+	if params.ItemPerPage == 0 {
 		totalPages = 1
-		*params.ItemPerPage = int(count)
+		params.ItemPerPage = int(count)
 	} else {
-		totalPages = int(math.Ceil(float64(count) / float64(*params.ItemPerPage)))
+		totalPages = int(math.Ceil(float64(count) / float64(params.ItemPerPage)))
 	}
 
 	response.CurrentPage = params.CurrentPage

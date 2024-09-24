@@ -17,6 +17,7 @@ func ApplySorting(db *gorm.DB, sortKey, sortPattern string) *gorm.DB {
 		}
 		return db.Order(fmt.Sprintf("%s %s", sortKey, sortOrder))
 	}
+
 	return db
 }
 
@@ -25,15 +26,32 @@ func ApplyPagination(db *gorm.DB, currentPage, itemPerPage int) *gorm.DB {
 	if itemPerPage <= 0 {
 		itemPerPage = 10 // Default items per page
 	}
+
 	offset := (currentPage - 1) * itemPerPage
 	return db.Offset(offset).Limit(itemPerPage)
 }
 
 // ApplyFilters adds filtering logic to the query based on QueryParams
-func ApplyFilters(db *gorm.DB, filterParams map[string]interface{}) *gorm.DB {
+func ApplyFilters(db *gorm.DB, filterParams map[string]interface{}, searchParams map[string]string) *gorm.DB {
+	// Apply normal filters
 	for key, value := range filterParams {
-		// Example filter logic: filter with exact match
 		db = db.Where(fmt.Sprintf("%s = ?", key), value)
 	}
+
+	// Apply search filters using OR logic
+	if len(searchParams) > 0 {
+		var orConditions []string
+		var orValues []interface{}
+
+		// Build OR conditions for search parameters
+		for column, searchValue := range searchParams {
+			orConditions = append(orConditions, fmt.Sprintf("%s ILIKE ?", column))
+			orValues = append(orValues, "%"+searchValue+"%")
+		}
+
+		// Combine the conditions into a single query using OR
+		db = db.Where("("+strings.Join(orConditions, " OR ")+")", orValues...)
+	}
+
 	return db
 }
