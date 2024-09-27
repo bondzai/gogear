@@ -35,7 +35,7 @@ func ApplyPagination(db *gorm.DB, currentPage, itemPerPage int) *gorm.DB {
 func ApplyFilters(db *gorm.DB, filterParams map[string]interface{}, searchParams map[string]string) *gorm.DB {
 	// Apply normal filters
 	for key, value := range filterParams {
-		if s, ok := value.(string); ok && s != "null" {
+		if s, ok := value.(string); ok && s == "null" {
 			db = db.Where(fmt.Sprintf("%s is null", key))
 		} else {
 			db = db.Where(fmt.Sprintf("%s = ?", key), value)
