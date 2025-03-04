@@ -1,25 +1,23 @@
 // internal/tools/gear.go
 package tools
 
-import "os"
-
 // Gear is a composite interface that includes multiple tool sets.
 type Gear interface {
 	Debugger
-	FileTool
+	Beta
 }
 
 // gear is the concrete implementation of Gear.
 type gear struct {
 	debugger Debugger
-	fileTool FileTool
+	beta     Beta
 }
 
 // NewGear initializes a new Gear that aggregates multiple tool sets.
 func NewGear() Gear {
 	return &gear{
 		debugger: NewDebugger(),
-		fileTool: NewFileTool(),
+		beta:     NewBeta(),
 	}
 }
 
@@ -36,11 +34,7 @@ func (g *gear) TrackRoutines() {
 	g.debugger.TrackRoutines()
 }
 
-// FileTool methods delegate to the embedded fileTool.
-func (g *gear) ReadFile(path string) ([]byte, error) {
-	return g.fileTool.ReadFile(path)
-}
-
-func (g *gear) WriteFile(path string, data []byte, perm os.FileMode) error {
-	return g.fileTool.WriteFile(path, data, perm)
+// Beta methods delegate to the embedded beta.
+func (g *gear) Beta() {
+	g.beta.Beta()
 }

@@ -2,8 +2,6 @@
 package gogear
 
 import (
-	"os"
-
 	"github.com/bondzai/gogear/internal/tools"
 )
 
@@ -23,11 +21,7 @@ func TrackRoutines() {
 	gears.TrackRoutines()
 }
 
-// File utilities.
-func FileRead(path string) ([]byte, error) {
-	return gears.ReadFile(path)
-}
-
-func FileWrite(path string, data []byte, perm uint32) error {
-	return gears.WriteFile(path, data, os.FileMode(perm))
+// Other utilities.
+func Beta() {
+	gears.Beta()
 }
