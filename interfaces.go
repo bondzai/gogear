@@ -1,21 +1,33 @@
+// gogear/gogear.go
 package gogear
 
-import "github.com/bondzai/gogear/internal/tools"
+import (
+	"os"
 
-// gears is a global default instance of DebugTool.
-var gears tools.Debugger = tools.NewDebugger()
+	"github.com/bondzai/gogear/internal/tools"
+)
 
-// Print is a wrapper around the DebugTool.Print method.
+// gears is a global default instance of Gear.
+var gears tools.Gear = tools.NewGear()
+
+// Debugging utilities.
 func Print(data interface{}, keys ...string) {
 	gears.Print(data, keys...)
 }
 
-// TrackRuntime is a wrapper around the DebugTool.TrackRuntime method.
 func TrackRuntime(funcName string) func() {
 	return gears.TrackRuntime(funcName)
 }
 
-// TrackRoutines is a wrapper around the DebugTool.TrackRoutines method.
 func TrackRoutines() {
 	gears.TrackRoutines()
+}
+
+// File utilities.
+func FileRead(path string) ([]byte, error) {
+	return gears.ReadFile(path)
+}
+
+func FileWrite(path string, data []byte, perm uint32) error {
+	return gears.WriteFile(path, data, os.FileMode(perm))
 }
